@@ -1,9 +1,13 @@
 import tensorflow.compat.v1 as tf
+from PIL import Image
+import numpy as np
 tf.disable_v2_behavior()
 tf.autograph.set_verbosity(
     0,
     alsologtostdout=True
 )
+
+
 
 class DeepLabModel(object):
   """Class to load deeplab model and run inference."""
@@ -17,7 +21,13 @@ class DeepLabModel(object):
     """Creates and loads pretrained deeplab model."""
     self.graph = tf.Graph()
 
-    graph_def = "model/frozen_inference_graph.pb"
+    file_handle = open("model/frozen_inference_graph.pb", "rb")
+
+    # Extract frozen graph from tar archive.
+    graph_def = tf.GraphDef.FromString(file_handle.read())
+
+    if graph_def is None:
+      raise RuntimeError('Cannot find inference graph in tar archive.')
 
     with self.graph.as_default():
       tf.import_graph_def(graph_def, name='')
@@ -43,5 +53,6 @@ class DeepLabModel(object):
         feed_dict={self.INPUT_TENSOR_NAME: [np.asarray(resized_image)]})
     seg_map = batch_seg_map[0]
     return resized_image, seg_map
+
 def load_model():
     return DeepLabModel("model")

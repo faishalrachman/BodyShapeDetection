@@ -2,6 +2,9 @@ import numpy as np
 import io
 from PIL import Image
 from libs.mobilenetv2_model import load_model
+from io import BytesIO, StringIO
+import matplotlib.pyplot as plt
+import base64
 
 def is_equal(a, b, tol_rate):
   return abs(a-b) < tol_rate
@@ -60,7 +63,6 @@ def body_shape_measurement(ba, pi, pa, tol):
   else:  # (ba > pa)
     return "V"
 
-
 def getShapeFromImage(file_path):
   #Load Segmentation Model
   MODEL = load_model()
@@ -96,5 +98,26 @@ def getShapeFromImage(file_path):
   lebar_bahu = distances[titik_bahu]
   lebar_pinggang = distances[titik_pinggang]
   lebar_panggul = distances[titik_panggul]
+  bentuk_badan = body_shape_measurement(lebar_bahu,lebar_pinggang,lebar_panggul,toleransi)
+
+  newByte = BytesIO()
+  # buffer_image.save(newByte, format="JPEG")
+
+  plt.ioff()
+  plt.imshow(seg_map)
+  plt.imshow(resized_image, alpha=0.5)
+  plt.savefig(newByte, format="JPEG")
+  plt.close()
+  newByte.seek(0)
+  encoded_string = base64.b64encode(newByte.getvalue()).decode("utf-8")
+  
+  #Metadata
+  output = {
+    "bahu" : lebar_bahu,
+    "pinggang": lebar_pinggang,
+    "panggul": lebar_panggul,
+    "bentuk_badan" : bentuk_badan,
+    "image_encoded" : encoded_string
+  }
   #Return the body shape measurement (H, A, X, O, V)
-  return body_shape_measurement(lebar_bahu,lebar_pinggang,lebar_panggul,toleransi)
+  return output
