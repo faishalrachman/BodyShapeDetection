@@ -45,6 +45,9 @@ class DeepLabModel(object):
       seg_map: Segmentation map of `resized_image`.
     """
     width, height = image.size
+    if (width > height):
+          image = image.transpose(Image.ROTATE_270)
+          width, height = image.size
     resize_ratio = 1.0 * self.INPUT_SIZE / max(width, height)
     target_size = (int(resize_ratio * width), int(resize_ratio * height))
     resized_image = image.convert('RGB').resize(target_size, Image.ANTIALIAS)

@@ -1,7 +1,7 @@
 <html>
 
 <head>
-
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script>
         function uploadFile() {
             let image = document.getElementById("fileToUpload").files[0];
@@ -31,15 +31,26 @@
             console.log("aman")
             var gambarcenah = getById("gambarcenah")
             gambarcenah.src = "data:image/jpg;base64," + data.image_encoded
+            gambarcenah.style.visibility = "visible"
             var lebarbahu = getById("lebarbahu")
             var lebarpanggul = getById("lebarpanggul")
             var lebarpinggang = getById("lebarpinggang")
             var bentukbadan = getById("bentukbadan")
+            var saran = getById("saran")
 
             lebarbahu.innerHTML = data.bahu
             lebarpanggul.innerHTML = data.panggul
             lebarpinggang.innerHTML = data.pinggang
             bentukbadan.innerHTML = data.bentuk_badan
+            saran.innerHTML = data.saran
+
+            var synth = window.speechSynthesis;
+            var utter = new SpeechSynthesisUtterance();
+            utter.rate = 1;
+            utter.pitch = 1;
+            utter.text = data.saran;
+            utter.voice = window.speechSynthesis.getVoices()[0];
+	        window.speechSynthesis.speak(utter);
 
             // var ctx = getById("mycanvas");
             // var myImage = new Image();
@@ -48,82 +59,58 @@
         }
     </script>
 
-    <style type="text/css">
-        .tg {
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
-
-        .tg td {
-            border-color: black;
-            border-style: solid;
-            border-width: 1px;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            overflow: hidden;
-            padding: 10px 5px;
-            word-break: normal;
-        }
-
-        .tg th {
-            border-color: black;
-            border-style: solid;
-            border-width: 1px;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            font-weight: normal;
-            overflow: hidden;
-            padding: 10px 5px;
-            word-break: normal;
-        }
-
-        .tg .tg-0lax {
-            text-align: left;
-            vertical-align: top
-        }
-    </style>
 </head>
 
 <body>
 
+    <div class="container text-center">
     <h1>Deteksi Human</h1>
+
     <div>
         <p>Upload Gambar: </p>
         <div>
             <input type="file" name="fileToUpload" id="fileToUpload">
-            <button id="btnUpload" onclick="onUpload()">Pencet Tolol</button>
+            <button class="btn btn-primary" id="btnUpload" onclick="onUpload()">Submit</button>
         </div>
         <div>
-            <img id="gambarcenah" src="data:image/png;base64,iVBORw0KGgoAAAANS..." />
+            <img id="gambarcenah" style="visibility:hidden" src="data:image/png;base64,iVBORw0KGgoAAAANS..." />
         </div>
         <div>
-            <table class="tg">
+            <div class="d-flex justify-content-center">
+            <table class="table col-lg-4">
                 <thead>
                     <tr>
-                        <th class="tg-0lax">Lebar Bahu</th>
-                        <th class="tg-0lax">
-                            <p id="lebarbahu">123123123</p>
-                        </th>
+                        <th>Jenis Badan</th>
+                        <th>Ukuran</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="tg-0lax">Lebar Pinggang</td>
-                        <td class="tg-0lax">
-                            <p id="lebarpinggang">123123123</p>
+                        <td>Lebar Bahu</td>
+                        <td>
+                            <p id="lebarbahu">0</p>
                         </td>
                     </tr>
                     <tr>
-                        <td class="tg-0lax">Lebar Panggul</td>
-                        <td class="tg-0lax">
-                            <p id="lebarpanggul">123123123</p>
+                        <td>Lebar Pinggang</td>
+                        <td>
+                            <p id="lebarpinggang">0</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Lebar Panggul</td>
+                        <td>
+                            <p id="lebarpanggul">0</p>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <p>Bentuk badan sianying adalah : <span id="bentukbadan">123123123</span></p>
+        </div>
+        <p class="text-center"><b>Bentuk badan</b> <br><span id="bentukbadan">-</span></p>
+        <p class="text-center"><b>Saran</b><br><span id="saran">-</span></p>
         </div>
     </div>
+</div>
 
 
 </body>

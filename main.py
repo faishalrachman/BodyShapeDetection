@@ -2,6 +2,7 @@ from libs.body_shape import getShapeFromImage
 from libs.mobilenetv2_model import load_model
 from flask import Flask, request, render_template
 import base64
+from time import time
 # momod = load_model()
 # image_file = "data/testing.jpg"
 # body_measurement = getShapeFromImage(image_file)
@@ -22,6 +23,9 @@ app.config["FILE_DESTINATION"] = "C:\\Users\\Ipat\\Documents\\Project\\TA Rafiqi
 app.config["IMAGE_UPLOADS"] = "uploads"
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG"]
 
+#Load Segmentation Model
+MODEL = load_model()
+
 def allowed_image(filename):
     if not "." in filename:
         return False
@@ -35,9 +39,10 @@ def allowed_image(filename):
 def upload_image():
     if request.method == "POST":
         if request.files:
+            timestamp = int(time())
             image = request.files["image"]
-            image.save(os.path.join(app.config["IMAGE_UPLOADS"], "temp.jpg"))
-            shape = getShapeFromImage("uploads/temp.jpg")
+            image.save(os.path.join(app.config["IMAGE_UPLOADS"], "temp-%d.jpg" % timestamp))
+            shape = getShapeFromImage("uploads/temp-%d.jpg" % timestamp, MODEL)
             return shape
     return "hahaha"
     #         if image.filename == "":
