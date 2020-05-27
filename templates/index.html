@@ -48,7 +48,7 @@
             var utter = new SpeechSynthesisUtterance();
             utter.rate = 1;
             utter.pitch = 1;
-            utter.text = data.saran;
+            utter.text = data.bentuk_badan + ".........." + data.saran;
             utter.voice = window.speechSynthesis.getVoices()[0];
 	        window.speechSynthesis.speak(utter);
 
