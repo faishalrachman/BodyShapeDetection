@@ -41,6 +41,6 @@ def upload_image():
             image.save(os.path.join(app.config["IMAGE_UPLOADS"], "temp-%d.jpg" % timestamp))
             shape = getShapeFromImage("uploads/temp-%d.jpg" % timestamp, MODEL)
             return shape
-    return "hahaha"
+    return "Invalid Format"
 
 app.run("0.0.0.0", 3000)
