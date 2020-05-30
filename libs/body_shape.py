@@ -111,24 +111,44 @@ def getShapeFromImage(file_path, MODEL):
     x2 = (titik, titik)
     titik_titik.append([x1, x2[0]])
     distances.append(x1[1]-x1[0])
+  
+  plt.ioff()
   #Define bahu, pinggang and panggul
   titik_bahu = 4
   titik_pinggang = 8
   titik_panggul = 10
+  jumlah_garis = 19
+  pembagian = new_image.shape[0] // jumlah_garis
+  plt.imshow(new_image)
+  font = {'family': 'serif',
+          'color':  'white',
+          'weight': 'normal',
+          'size': 8,
+          }
+  distances = []
+  titik_titik = []
+  for i in range(1, jumlah_garis+1):
+    titik = i * pembagian
+    x1 = cariHorizontal(new_image[titik, :], code_person)
+    x2 = (titik, titik)
+    titik_titik.append([x1, x2[0]])
+    distances.append(x1[1]-x1[0])
+    if (i == titik_bahu or i == titik_pinggang or i == titik_panggul):
+      plt.text(x1[0]-30, titik, x1[1]-x1[0], fontdict=font)
+      plt.plot(x1, x2)
   toleransi = 2 #centimeters
-  lebar_bahu = distances[titik_bahu]
-  lebar_pinggang = distances[titik_pinggang]
-  lebar_panggul = distances[titik_panggul]
+  lebar_bahu = distances[titik_bahu-1]
+  lebar_pinggang = distances[titik_pinggang-1]
+  lebar_panggul = distances[titik_panggul-1]
   bentuk_badan = body_shape_measurement(lebar_bahu,lebar_pinggang,lebar_panggul,toleransi)
-
+  
   newByte = BytesIO()
   # buffer_image.save(newByte, format="JPEG")
 
-  plt.ioff()
-  plt.imshow(seg_map)
-  plt.imshow(resized_image, alpha=0.5)
+  # plt.imshow(seg_map)
+  # plt.imshow(resized_image, alpha=0.5)
   plt.savefig(newByte, format="JPEG")
-  plt.close()
+  plt.close('all')
   newByte.seek(0)
   encoded_string = base64.b64encode(newByte.getvalue()).decode("utf-8")
   

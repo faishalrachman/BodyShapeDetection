@@ -3,6 +3,22 @@
 <head>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script>
+        
+        function setSpeech() {
+            return new Promise(
+                function (resolve, reject) {
+                    let synth = window.speechSynthesis;
+                    let id;
+
+                    id = setInterval(() => {
+                        if (synth.getVoices().length !== 0) {
+                            resolve(synth.getVoices());
+                            clearInterval(id);
+                        }
+                    }, 10);
+                }
+            )
+        }
         function uploadFile() {
             let image = document.getElementById("fileToUpload").files[0];
             let formData = new FormData();
@@ -21,7 +37,11 @@
                         values => {
                             // myImage.src = values.image_encoded;
                             // ctx.drawImage(myImage, 0, 0);
-                            setOutput(values)
+                            if (values.bahu > 0 && values.panggul > 0 && values.pinggang > 0){
+                                setOutput(values)
+                            } else {
+                                alert("Object is not detected, please contact customer support!")
+                            }
                         }
                     )
                 }
@@ -38,24 +58,22 @@
             var bentukbadan = getById("bentukbadan")
             var saran = getById("saran")
 
-            lebarbahu.innerHTML = data.bahu
-            lebarpanggul.innerHTML = data.panggul
-            lebarpinggang.innerHTML = data.pinggang
+            lebarbahu.innerHTML = data.bahu + " cm"
+            lebarpanggul.innerHTML = data.panggul + " cm"
+            lebarpinggang.innerHTML = data.pinggang + " cm"
             bentukbadan.innerHTML = data.bentuk_badan
             saran.innerHTML = data.saran
 
-            var synth = window.speechSynthesis;
-            var utter = new SpeechSynthesisUtterance();
-            utter.rate = 1;
-            utter.pitch = 1;
-            utter.text = data.bentuk_badan + ".........." + data.saran;
-            utter.voice = window.speechSynthesis.getVoices()[0];
-	        window.speechSynthesis.speak(utter);
-
-            // var ctx = getById("mycanvas");
-            // var myImage = new Image();
-            // myImage.src = input_encoded
-            // ctx.drawImage(myImage, 0, 0);
+            setSpeech().then((voices) => {
+                var synth = window.speechSynthesis;
+                var utter = new SpeechSynthesisUtterance();
+                utter.rate = 1;
+                utter.pitch = 1;
+                utter.text = data.bentuk_badan + ".........." + data.saran;
+                utter.voice = voices[10];
+                console.log(utter.voice)
+                window.speechSynthesis.speak(utter);
+            })
         }
     </script>
 
