@@ -1,6 +1,6 @@
 six==1.13.0
 numpy==1.17.4
-Pillow==7.1.2
+Pillow==9.3.0
 tensorflow==1.15.0
 matplotlib==3.2.1
 Werkzeug==1.0.1
